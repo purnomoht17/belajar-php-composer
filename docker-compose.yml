@@ -1,0 +1,55 @@
+services:
+  # Layanan PHP (PHP-FPM)
+  php:
+    build: 
+      context: .
+    # Pastikan container_name unik untuk lingkungan Anda
+    container_name: belajar-php-composer
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - mysql
+    environment:
+      # Variabel Lingkungan Anda
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      # Tambahan untuk membantu mengatasi izin file (Opsional)
+      UID: ${UID:-1000}
+      GID: ${GID:-1000}
+    healthcheck:
+      test: ["CMD", "php-fpm", "-t"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Layanan Web Server (Nginx)
+  webserver:
+    image: nginx:latest
+    container_name: belajar-php-composer-nginx
+    ports:
+      - "8087:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      php:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    container_name: belajar-php-composer-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
