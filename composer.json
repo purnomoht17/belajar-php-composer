@@ -1,0 +1,25 @@
+{
+    "name": "heru/belajar-php-composer",
+    "description": "belajar PHP composer",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Heru Purnomo",
+            "email": "purnomoht17@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "heru\\": "src/"
+        }
+    },
+    "require": {
+        "php" : ">=8.0",
+        "programmerzamannow/belajar-php-composer-hello" : "2.0.0",
+        "monolog/monolog": ">=3.9.0"
+    },
+    "scripts": {
+        "run" : "php -S localhost:8080",
+        "hello" : "echo 'Hello World'"
+    }
+}
